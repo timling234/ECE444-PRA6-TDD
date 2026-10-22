@@ -1,0 +1,2 @@
+PASS original post 2 survives Render web service restart in a fresh HTTP session
+PASS disposable persistence marker removed after verification

@@ -13,11 +13,11 @@ Sources: uploaded ECE444 PRA6 PDF and course README, blob 8aa60bcbf0d55342c45891
 - [x] /search/ and navigation; own tests for title/body, case, no query, nonmatches, result IDs.
 - [x] login_required decorator; own tests for anonymous deletion, post preservation and logout revocation.
 - [x] DATABASE_URL support and postgres:// normalization, SQLite fallback.
-- [x] Flake8, Black and final automated tests: 15 passed.
+- [x] Flake8, Black and final automated tests: 17 passed.
 - [ ] Manual browser check: login/logout, two posts, JavaScript deletion in DOM and DB, search.
-- [ ] Deploy web service from main, verify deployment logs and public URL.
-- [ ] Provision and connect PostgreSQL, initialize tables, verify actual remote persistence.
-- [ ] Verify live login, post, search, delete and anonymous denial.
+- [x] Deploy web service from main, verify deployment logs and public URL.
+- [x] Provision and connect PostgreSQL, initialize tables, verify actual remote persistence across a confirmed web service restart.
+- [x] Verify live login, post, search, delete and anonymous denial using real HTTP requests.
 - [x] Prepare TA demo and test explanation guide.
 - [ ] Attend enrolled PRA and obtain TA evaluation before session ends.
 - [ ] Submit GitHub repository link to Quercus (text entry required).

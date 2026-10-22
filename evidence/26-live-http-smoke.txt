@@ -1,0 +1,9 @@
+PASS public home page
+PASS login and redirect
+PASS authenticated post creation; id=1
+PASS fresh session reads persisted post
+PASS case-insensitive body search
+PASS anonymous deletion denied; row preserved
+PASS authenticated deletion; fresh-session absence
+PASS logout
+All real HTTP smoke checks passed. Disposable post removed.

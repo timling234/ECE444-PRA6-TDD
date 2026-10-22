@@ -143,14 +143,14 @@ def test_body_keeps_formatting_but_removes_active_html(client):
 
 
 def test_postgres_url_uses_installed_psycopg2_driver(monkeypatch):
-    monkeypatch.setenv('DATABASE_URL', 'postgresql://demo:demo@localhost/flaskr')
-    postgres_app = create_app({'TESTING': True})
+    monkeypatch.setenv("DATABASE_URL", "postgresql://demo:demo@localhost/flaskr")
+    postgres_app = create_app({"TESTING": True})
     with postgres_app.app_context():
-        assert db.engine.url.drivername == 'postgresql+psycopg2'
+        assert db.engine.url.drivername == "postgresql+psycopg2"
 
 
 def test_legacy_postgres_url_is_normalized(monkeypatch):
-    monkeypatch.setenv('DATABASE_URL', 'postgres://demo:demo@localhost/flaskr')
-    postgres_app = create_app({'TESTING': True})
+    monkeypatch.setenv("DATABASE_URL", "postgres://demo:demo@localhost/flaskr")
+    postgres_app = create_app({"TESTING": True})
     with postgres_app.app_context():
-        assert db.engine.url.drivername == 'postgresql+psycopg2'
+        assert db.engine.url.drivername == "postgresql+psycopg2"

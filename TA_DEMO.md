@@ -3,7 +3,7 @@
 ## 4-minute demonstration
 
 1. Open the live URL (once verified). Explain Flask handles requests, Jinja renders HTML, SQLAlchemy talks to Postgres, Gunicorn serves the Flask app on Render.
-2. Show the test command and 15 passing tests. Explain a red/green record in evidence/; show Git history rather than claiming code was written test-first without evidence.
+2. Show the test command and 17 passing tests. Explain a red/green record in evidence/; show Git history rather than claiming code was written test-first without evidence.
 3. Log in with demo credentials; show invalid credentials produce errors. Session stores logged_in in a signed cookie, and SECRET_KEY must stay stable across production workers.
 4. Add two disposable posts. Search by title and by a mixed-case word in the body. Click one post to delete; confirm it disappears, refresh and verify it stays deleted. The JavaScript fetch reads the post's h2 ID and consumes JSON status.
 5. Log out and attempt deletion; expect HTTP 401, status 0 and Please log in. Verify the post remains. Explain the decorator uses wraps to preserve Flask's endpoint metadata.
@@ -36,3 +36,12 @@ GET reads pages; POST sends login/post data; redirects implement post-redirect-g
 SQLite is a local file; PostgreSQL is a remote server and persists independently from the web instance's ephemeral filesystem. Internal URL is for Render service connections; External URL is for local access and must remain secret. create_all creates missing tables but is not a schema migration tool.
 
 Never tell the TA deployment or submission is complete until the actual public URL, database behavior and submission confirmation are verified.
+
+Two additional driver tests verify postgres:// and postgresql:// use the installed psycopg2 driver. They inspect engine configuration without connecting to a real server.
+
+Verified deployed URL: https://ece444-pra6-tdd.onrender.com/
+Automated evidence: 17 passing local tests, lint/format checks, real online and local HTTP smoke logs.
+
+Restart persistence verified: Render Events recorded a service restart at 2:32 p.m. EDT on Oct 22, 2026; a fresh HTTP session read the original database post afterward. The disposable marker was removed.
+
+Remaining student steps: rehearse the full click-by-click browser flow, attend the enrolled PRA for TA evaluation, and submit the repository URL in the Quercus text box.

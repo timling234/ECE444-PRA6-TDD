@@ -23,7 +23,7 @@ The tutorial demo credentials are admin / admin. Use only disposable demo conten
 .\.venv\Scripts\python.exe -m black --workers 1 --check project tests create_db.py
 ```
 
-Verified locally: 15 tests passed; Flake8 and Black checks exited 0. Logs are in evidence/. First Hello World, SQLite, blog, deletion, search, authorization and HTML sanitization stages have actual test execution records. 06-blog-environment-error.txt is an environment failure, not a successful run; the subsequent six-test SQLite run and ORM runs passed.
+Verified locally: 17 tests passed; Flake8 and Black checks exited 0. Logs are in evidence/. First Hello World, SQLite, blog, deletion, search, authorization and HTML sanitization stages have actual test execution records. 06-blog-environment-error.txt is an environment failure, not a successful run; the subsequent six-test SQLite run and ORM runs passed.
 
 The factory configures each test database before SQLAlchemy initialization so tests never touch the deployment database. Each test gets a temporary SQLite database and drops its tables afterward.
 
@@ -50,4 +50,12 @@ Uses an app factory and separate extension/model module to avoid circular import
 Quercus submission link: https://q.utoronto.ca/courses/468834/assignments/1848474
 Submit the GitHub repository URL in its text box. The page shows Nov 6, 2026 at 11:59 p.m.; it also says grading must occur in person before the end of your enrolled PRA session.
 
-Deployment, live PostgreSQL verification and Quercus submission are still pending. See TASKS.md and TA_DEMO.md.
+Live app: https://ece444-pra6-tdd.onrender.com/
+
+Render reported Live for commit 0d42657 on Oct 22, 2026. Real HTTP smoke checks passed for public home, login, create/read/search, denied anonymous deletion with preserved data, authenticated deletion and logout. The same checks passed against the local one-command launcher on port 5001. Logs: evidence/26-live-http-smoke.txt and evidence/27-local-launcher-smoke.txt. The deployed PostgreSQL driver is selected explicitly as postgresql+psycopg2 because SQLAlchemy 2.1 otherwise selects psycopg 3.
+
+Web service: https://dashboard.render.com/web/srv-dbd57uvavr4c73cf4ndg
+Database: https://dashboard.render.com/d/dpg-dbd56ht9fdbs739tpdf0-a
+Free database expires November 21, 2026.
+
+The service restart persistence check passed: the original post survived a confirmed Render service restart and was then removed (evidence/28-restart-persistence.txt). Browser rendering and login were observed, but the complete click-by-click create/search/JavaScript-delete demo remains for the student to rehearse. Quercus submission and in-person TA evaluation have not been performed. See TASKS.md and TA_DEMO.md.
