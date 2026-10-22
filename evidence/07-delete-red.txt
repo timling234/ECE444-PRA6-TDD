@@ -1,0 +1,25 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\lingt\.codex\.chatgpt-projects\g-p-6a4acb080d3c8191938008eb8f0bb210\ECE444-PRA6-TDD
+plugins: platformdirs-4.13.5
+collected 6 items
+
+tests\app_test.py .....F                                                 [100%]
+
+================================== FAILURES ===================================
+_____________________________ test_delete_message _____________________________
+
+client = <FlaskClient <Flask 'project.app'>>
+
+    def test_delete_message(client):
+        login(client)
+        client.post('/add', data=dict(title='Delete me', text='temporary'))
+        response = client.get('/delete/1')
+>       assert response.status_code == 200
+E       assert 404 == 200
+E        +  where 404 = <WrapperTestResponse streamed [404 NOT FOUND]>.status_code
+
+tests\app_test.py:48: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/app_test.py::test_delete_message - assert 404 == 200
+========================= 1 failed, 5 passed in 0.49s =========================

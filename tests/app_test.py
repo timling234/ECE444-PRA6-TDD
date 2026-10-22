@@ -39,3 +39,12 @@ def test_messages(client):
     assert b'&lt;Hello&gt;' in response.data
     assert b'<strong>HTML</strong> allowed here' in response.data
     assert b'No entries yet. Add some!' not in response.data
+
+
+def test_delete_message(client):
+    login(client)
+    client.post('/add', data=dict(title='Delete me', text='temporary'))
+    response = client.get('/delete/1')
+    assert response.status_code == 200
+    assert response.get_json()['status'] == 1
+    assert b'Delete me' not in client.get('/').data

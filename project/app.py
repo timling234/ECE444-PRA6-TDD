@@ -67,3 +67,13 @@ def add_entry():
     database.commit()
     flash('New entry was successfully posted')
     return redirect(url_for('index'))
+
+
+@app.route('/delete/<int:post_id>')
+def delete_entry(post_id):
+    from flask import jsonify
+    database = get_db()
+    database.execute('delete from entries where id = ?', (post_id,))
+    database.commit()
+    flash('The entry was deleted.')
+    return jsonify(status=1, message='Post Deleted')
