@@ -5,14 +5,15 @@ Course instructions: https://github.com/shuruizUofT/flaskr-tdd/blob/main/README.
 
 ## Run locally (PowerShell)
 
+Open this folder in VS Code, open its terminal, and run:
+
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe create_db.py
-.\.venv\Scripts\python.exe -m flask --app project.app run --port 5001
+python run_app.py
 ```
 
-Open http://127.0.0.1:5001/. The tutorial demo credentials are admin / admin. Use only disposable demo content. Set ADMIN_USERNAME and ADMIN_PASSWORD to override them. Set a stable SECRET_KEY for deployment; Render generates it through render.yaml. Never commit .env or database credentials.
+The launcher creates a virtual environment, installs pinned requirements on first run, creates a local SQLite database, starts Flask at http://127.0.0.1:5001/ and opens the browser. Keep the terminal open; Ctrl+C stops it. Later runs reuse the environment and data. If port 5001 is already used, run `python run_app.py --port 5002`.
+
+The tutorial demo credentials are admin / admin. Use only disposable demo content. Set ADMIN_USERNAME and ADMIN_PASSWORD to override them. The launcher saves a local session key inside the ignored instance/ folder. Render uses its own SECRET_KEY and PostgreSQL DATABASE_URL. Never commit .env or database credentials.
 
 ## Verify
 
