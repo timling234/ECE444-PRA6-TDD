@@ -6,7 +6,6 @@ import os
 from pathlib import Path
 import secrets
 import subprocess
-import sys
 import threading
 import venv
 import webbrowser
