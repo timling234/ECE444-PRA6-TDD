@@ -17,8 +17,10 @@ The tutorial demo credentials are admin / admin. Use only disposable demo conten
 
 ## Verify
 
+Run `python test.py` for all tests, or `python test.py -v` for individual test names. The launcher automatically uses the project virtual environment.
+
 ```powershell
-.\.venv\Scripts\python.exe -m pytest
+python test.py
 .\.venv\Scripts\python.exe -m flake8 project tests create_db.py
 .\.venv\Scripts\python.exe -m black --workers 1 --check project tests create_db.py
 ```
