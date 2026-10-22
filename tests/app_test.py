@@ -89,6 +89,12 @@ def test_search_title_body_case_insensitive(client, query, expected, absent):
     assert response.status_code == 200
     if expected:
         assert expected.encode() in response.data
+        assert b"No matching entries." not in response.data
+    else:
+        assert b"Alpha title" not in response.data
+        assert b"Other title" not in response.data
+        assert b'class="entry"' not in response.data
+        assert b"No matching entries." in response.data
     assert absent.encode() not in response.data
 
 
