@@ -1,0 +1,97 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\lingt\.codex\.chatgpt-projects\g-p-6a4acb080d3c8191938008eb8f0bb210\ECE444-PRA6-TDD
+configfile: pyproject.toml
+testpaths: tests
+plugins: platformdirs-4.13.5
+collected 17 items
+
+tests\app_test.py ...............FF                                      [100%]
+
+================================== FAILURES ===================================
+______________ test_postgres_url_uses_installed_psycopg2_driver _______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000000000713D8B0>
+
+    def test_postgres_url_uses_installed_psycopg2_driver(monkeypatch):
+        monkeypatch.setenv('DATABASE_URL', 'postgresql://demo:demo@localhost/flaskr')
+>       postgres_app = create_app({'TESTING': True})
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\app_test.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+project\app.py:41: in create_app
+    db.init_app(app)
+.venv\Lib\site-packages\flask_sqlalchemy\extension.py:374: in init_app
+    engines[key] = self._make_engine(key, options, app)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\flask_sqlalchemy\extension.py:665: in _make_engine
+    return sa.engine_from_config(options, prefix="")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\create.py:832: in engine_from_config
+    return create_engine(url, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<sqlalchemy generated warned() wrapper for sqlalchemy.engine.create.create_engine>:2: in create_engine
+    return target(fn, url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\create.py:602: in create_engine
+    dbapi = dbapi_meth(**dbapi_args)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cls = <class 'sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg'>
+
+    @classmethod
+    def import_dbapi(cls):
+>       import psycopg
+E       ModuleNotFoundError: No module named 'psycopg'
+
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\psycopg.py:497: ModuleNotFoundError
+___________________ test_legacy_postgres_url_is_normalized ____________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000000072A1C10>
+
+    def test_legacy_postgres_url_is_normalized(monkeypatch):
+        monkeypatch.setenv('DATABASE_URL', 'postgres://demo:demo@localhost/flaskr')
+>       postgres_app = create_app({'TESTING': True})
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\app_test.py:154: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+project\app.py:41: in create_app
+    db.init_app(app)
+.venv\Lib\site-packages\flask_sqlalchemy\extension.py:374: in init_app
+    engines[key] = self._make_engine(key, options, app)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\flask_sqlalchemy\extension.py:665: in _make_engine
+    return sa.engine_from_config(options, prefix="")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\create.py:832: in engine_from_config
+    return create_engine(url, **options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<sqlalchemy generated warned() wrapper for sqlalchemy.engine.create.create_engine>:2: in create_engine
+    return target(fn, url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\create.py:602: in create_engine
+    dbapi = dbapi_meth(**dbapi_args)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+cls = <class 'sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg'>
+
+    @classmethod
+    def import_dbapi(cls):
+>       import psycopg
+E       ModuleNotFoundError: No module named 'psycopg'
+
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\psycopg.py:497: ModuleNotFoundError
+=========================== short test summary info ===========================
+FAILED tests/app_test.py::test_postgres_url_uses_installed_psycopg2_driver - ...
+FAILED tests/app_test.py::test_legacy_postgres_url_is_normalized - ModuleNotF...
+======================== 2 failed, 15 passed in 1.83s =========================

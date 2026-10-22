@@ -26,7 +26,9 @@ def create_app(test_config=None):
         "sqlite:///" + str(Path(__file__).resolve().parent / "flaskr.db"),
     )
     if url.startswith("postgres://"):
-        url = url.replace("postgres://", "postgresql://", 1)
+        url = url.replace("postgres://", "postgresql+psycopg2://", 1)
+    elif url.startswith("postgresql://"):
+        url = url.replace("postgresql://", "postgresql+psycopg2://", 1)
     app.config.update(
         SQLALCHEMY_DATABASE_URI=url,
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
