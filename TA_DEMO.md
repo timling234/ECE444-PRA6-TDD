@@ -3,9 +3,9 @@
 ## 4-minute demonstration
 
 1. Open the live URL (once verified). Explain Flask handles requests, Jinja renders HTML, SQLAlchemy talks to Postgres, Gunicorn serves the Flask app on Render.
-2. Show the test command and 17 passing tests. Explain a red/green record in evidence/; show Git history rather than claiming code was written test-first without evidence.
+2. Show the test command and 20 passing tests. Explain a red/green record in evidence/; show Git history rather than claiming code was written test-first without evidence.
 3. Log in with demo credentials; show invalid credentials produce errors. Session stores logged_in in a signed cookie, and SECRET_KEY must stay stable across production workers.
-4. Add two disposable posts. Search by title and by a mixed-case word in the body. Click one post to delete; confirm it disappears, refresh and verify it stays deleted. The JavaScript fetch reads the post's h2 ID and consumes JSON status.
+4. Add two disposable posts. Search by title and by a mixed-case word in the body. Click its Delete button to delete; confirm it disappears, refresh and verify it stays deleted. The JavaScript fetch reads the post's h2 ID and consumes JSON status.
 5. Log out and attempt deletion; expect HTTP 401, status 0 and Please log in. Verify the post remains. Explain the decorator uses wraps to preserve Flask's endpoint metadata.
 6. Refresh from another browser/session to demonstrate the same persisted PostgreSQL data. Show Render successful deployment and service environment key names without revealing values.
 
@@ -40,8 +40,10 @@ Never tell the TA deployment or submission is complete until the actual public U
 Two additional driver tests verify postgres:// and postgresql:// use the installed psycopg2 driver. They inspect engine configuration without connecting to a real server.
 
 Verified deployed URL: https://ece444-pra6-tdd.onrender.com/
-Automated evidence: 17 passing local tests, lint/format checks, real online and local HTTP smoke logs.
+Automated evidence: 20 passing local tests, lint/format checks, real online and local HTTP smoke logs.
 
 Restart persistence verified: Render Events recorded a service restart at 2:32 p.m. EDT on Oct 22, 2026; a fresh HTTP session read the original database post afterward. The disposable marker was removed.
 
 Remaining student steps: rehearse the full click-by-click browser flow, attend the enrolled PRA for TA evaluation, and submit the repository URL in the Quercus text box.
+
+Deletion demo update: click the visible Delete button. The browser sends POST and accepts JSON; if JavaScript is unavailable, the form POST redirects back to home. Authentication is required in both paths. Actual browser deletion was verified with disposable posts (evidence/delete-button-browser.png).

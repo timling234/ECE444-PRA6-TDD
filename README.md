@@ -25,7 +25,7 @@ python test.py
 .\.venv\Scripts\python.exe -m black --workers 1 --check project tests create_db.py
 ```
 
-Verified locally: 17 tests passed; Flake8 and Black checks exited 0. Logs are in evidence/. First Hello World, SQLite, blog, deletion, search, authorization and HTML sanitization stages have actual test execution records. 06-blog-environment-error.txt is an environment failure, not a successful run; the subsequent six-test SQLite run and ORM runs passed.
+Verified locally: 20 tests passed; Flake8 and Black checks exited 0. Logs are in evidence/. First Hello World, SQLite, blog, deletion, search, authorization and HTML sanitization stages have actual test execution records. 06-blog-environment-error.txt is an environment failure, not a successful run; the subsequent six-test SQLite run and ORM runs passed.
 
 The factory configures each test database before SQLAlchemy initialization so tests never touch the deployment database. Each test gets a temporary SQLite database and drops its tables afterward.
 
@@ -45,7 +45,7 @@ render.yaml also describes these resources. create_db.py only creates missing ta
 
 ## Tutorial adaptations
 
-Uses an app factory and separate extension/model module to avoid circular imports and ensure isolated database fixtures with current Flask-SQLAlchemy. Bootstrap shares a base template. Search results use the actual entry.id (fixing the tutorial's entry.post_id typo). HTML body formatting is preserved for allowed tags and sanitized with Bleach before rendering. GET deletion is retained to match the course tutorial; this is a course demonstration, not a production authentication system.
+Uses an app factory and separate extension/model module to avoid circular imports and ensure isolated database fixtures with current Flask-SQLAlchemy. Bootstrap shares a base template. Search results use the actual entry.id (fixing the tutorial's entry.post_id typo). HTML body formatting is preserved for allowed tags and sanitized with Bleach before rendering. Explicit Delete buttons submit POST requests with a normal form fallback. GET deletion remains for course tutorial compatibility; this is a course demonstration, not a production authentication system.
 
 ## Submission and demo status
 
@@ -61,3 +61,5 @@ Database: https://dashboard.render.com/d/dpg-dbd56ht9fdbs739tpdf0-a
 Free database expires November 21, 2026.
 
 The service restart persistence check passed: the original post survived a confirmed Render service restart and was then removed (evidence/28-restart-persistence.txt). Browser rendering and login were observed, but the complete click-by-click create/search/JavaScript-delete demo remains for the student to rehearse. Quercus submission and in-person TA evaluation have not been performed. See TASKS.md and TA_DEMO.md.
+
+Delete-button regression fix: signed-in users have an explicit Delete button on home and search results. Browser click verified that the selected post disappears and another post remains. Three regression tests cover the ordinary POST form, JSON fetch and anonymous POST denial. Latest suite: 20 passed. After pulling updates, stop and restart `python run_app.py`, then refresh the page.

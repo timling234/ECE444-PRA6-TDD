@@ -1,0 +1,60 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\lingt\.codex\.chatgpt-projects\g-p-6a4acb080d3c8191938008eb8f0bb210\ECE444-PRA6-TDD
+configfile: pyproject.toml
+testpaths: tests
+plugins: platformdirs-4.13.5
+collected 20 items
+
+tests\app_test.py .................FFF                                   [100%]
+
+================================== FAILURES ===================================
+______________ test_delete_button_form_works_without_javascript _______________
+
+client = <FlaskClient <Flask 'project.app'>>
+
+    def test_delete_button_form_works_without_javascript(client):
+        login(client)
+        db.session.add(Post(id=42, title='Delete by button', text='demo'))
+        db.session.commit()
+>       assert b'action="/delete/42"' in client.get('/').data
+E       assert b'action="/delete/42"' in b'<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, init...ss="entry"><h2 id="42">Delete by button</h2>demo</li></ul></main><script src="/static/main.js"></script></body></html>'
+E        +  where b'<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, init...ss="entry"><h2 id="42">Delete by button</h2>demo</li></ul></main><script src="/static/main.js"></script></body></html>' = <WrapperTestResponse 882 bytes [200 OK]>.data
+E        +    where <WrapperTestResponse 882 bytes [200 OK]> = get('/')
+E        +      where get = <FlaskClient <Flask 'project.app'>>.get
+
+tests\app_test.py:163: AssertionError
+____________________ test_delete_button_fetch_returns_json ____________________
+
+client = <FlaskClient <Flask 'project.app'>>
+
+    def test_delete_button_fetch_returns_json(client):
+        login(client)
+        db.session.add(Post(id=42, title='Delete with fetch', text='demo'))
+        db.session.commit()
+        response = client.post('/delete/42', headers={'Accept': 'application/json'})
+>       assert response.status_code == 200
+E       assert 405 == 200
+E        +  where 405 = <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]>.status_code
+
+tests\app_test.py:176: AssertionError
+___________________ test_anonymous_cannot_delete_with_form ____________________
+
+client = <FlaskClient <Flask 'project.app'>>
+
+    def test_anonymous_cannot_delete_with_form(client):
+        db.session.add(Post(id=42, title='Keep this post', text='demo'))
+        db.session.commit()
+        assert b'action="/delete/42"' not in client.get('/').data
+>       assert client.post('/delete/42').status_code == 401
+E       AssertionError: assert 405 == 401
+E        +  where 405 = <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]>.status_code
+E        +    where <WrapperTestResponse streamed [405 METHOD NOT ALLOWED]> = post('/delete/42')
+E        +      where post = <FlaskClient <Flask 'project.app'>>.post
+
+tests\app_test.py:185: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/app_test.py::test_delete_button_form_works_without_javascript - ...
+FAILED tests/app_test.py::test_delete_button_fetch_returns_json - assert 405 ...
+FAILED tests/app_test.py::test_anonymous_cannot_delete_with_form - AssertionE...
+======================== 3 failed, 17 passed in 1.31s =========================

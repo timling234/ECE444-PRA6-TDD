@@ -1,12 +1,22 @@
-for (const entry of document.querySelectorAll('.entry')) {
-  entry.addEventListener('click', async () => {
-    const id = entry.querySelector('h2').id;
+for (const form of document.querySelectorAll('.delete-entry')) {
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = form.querySelector('button');
+    button.disabled = true;
     try {
-      const response = await fetch(`/delete/${id}`);
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: {Accept: 'application/json'},
+        credentials: 'same-origin'
+      });
       const result = await response.json();
-      if (response.ok && result.status === 1) entry.remove();
-      else alert(result.message);
+      if (!response.ok || result.status !== 1) {
+        throw new Error(result.message || 'Could not delete the post.');
+      }
       location.reload();
-    } catch (error) { console.error(error); }
+    } catch (error) {
+      alert(error.message || 'Could not delete the post. Please try again.');
+      button.disabled = false;
+    }
   });
 }

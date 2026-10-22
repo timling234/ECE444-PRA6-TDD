@@ -113,12 +113,17 @@ def register_routes(app):
         flash("New entry was successfully posted")
         return redirect(url_for("index"))
 
-    @app.route("/delete/<int:post_id>")
+    @app.route("/delete/<int:post_id>", methods=["GET", "POST"])
     @login_required
     def delete_entry(post_id):
         db.session.query(Post).filter_by(id=post_id).delete()
         db.session.commit()
         flash("The entry was deleted.")
+        if (
+            request.method == "POST"
+            and request.headers.get("Accept") != "application/json"
+        ):
+            return redirect(url_for("index"))
         return jsonify(status=1, message="Post Deleted")
 
 

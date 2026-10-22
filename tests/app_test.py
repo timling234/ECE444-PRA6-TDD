@@ -154,3 +154,33 @@ def test_legacy_postgres_url_is_normalized(monkeypatch):
     postgres_app = create_app({"TESTING": True})
     with postgres_app.app_context():
         assert db.engine.url.drivername == "postgresql+psycopg2"
+
+
+def test_delete_button_form_works_without_javascript(client):
+    login(client)
+    db.session.add(Post(id=42, title="Delete by button", text="demo"))
+    db.session.commit()
+    assert b'action="/delete/42"' in client.get("/").data
+    assert b'action="/delete/42"' in client.get("/search/?query=button").data
+    response = client.post("/delete/42", follow_redirects=True)
+    assert response.status_code == 200
+    assert b"The entry was deleted." in response.data
+    assert db.session.get(Post, 42) is None
+
+
+def test_delete_button_fetch_returns_json(client):
+    login(client)
+    db.session.add(Post(id=42, title="Delete with fetch", text="demo"))
+    db.session.commit()
+    response = client.post("/delete/42", headers={"Accept": "application/json"})
+    assert response.status_code == 200
+    assert response.get_json()["status"] == 1
+    assert db.session.get(Post, 42) is None
+
+
+def test_anonymous_cannot_delete_with_form(client):
+    db.session.add(Post(id=42, title="Keep this post", text="demo"))
+    db.session.commit()
+    assert b'action="/delete/42"' not in client.get("/").data
+    assert client.post("/delete/42").status_code == 401
+    assert db.session.get(Post, 42) is not None
