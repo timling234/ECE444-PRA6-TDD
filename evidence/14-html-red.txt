@@ -1,0 +1,25 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\lingt\.codex\.chatgpt-projects\g-p-6a4acb080d3c8191938008eb8f0bb210\ECE444-PRA6-TDD
+plugins: platformdirs-4.13.5
+collected 15 items
+
+tests\app_test.py ..............F                                        [100%]
+
+================================== FAILURES ===================================
+_____________ test_body_keeps_formatting_but_removes_active_html ______________
+
+client = <FlaskClient <Flask 'project.app'>>
+
+    def test_body_keeps_formatting_but_removes_active_html(client):
+        login(client)
+        response = client.post('/add', data=dict(title='Safe body', text='<strong>bold</strong><script>alert(1)</script>'), follow_redirects=True)
+        assert b'<strong>bold</strong>' in response.data
+>       assert b'<script>alert(1)</script>' not in response.data
+E       assert b'<script>alert(1)</script>' not in b'<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, init...2><strong>bold</strong><script>alert(1)</script></li></ul></main><script src="/static/main.js"></script></body></html>'
+E        +  where b'<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, init...2><strong>bold</strong><script>alert(1)</script></li></ul></main><script src="/static/main.js"></script></body></html>' = <WrapperTestResponse 988 bytes [200 OK]>.data
+
+tests\app_test.py:107: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/app_test.py::test_body_keeps_formatting_but_removes_active_html
+======================== 1 failed, 14 passed in 2.03s =========================

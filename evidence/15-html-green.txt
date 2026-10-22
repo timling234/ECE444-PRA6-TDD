@@ -1,0 +1,9 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\lingt\.codex\.chatgpt-projects\g-p-6a4acb080d3c8191938008eb8f0bb210\ECE444-PRA6-TDD
+plugins: platformdirs-4.13.5
+collected 15 items
+
+tests\app_test.py ...............                                        [100%]
+
+============================= 15 passed in 1.91s ==============================
