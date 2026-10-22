@@ -1,0 +1,21 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\lingt\.codex\.chatgpt-projects\g-p-6a4acb080d3c8191938008eb8f0bb210\ECE444-PRA6-TDD
+plugins: platformdirs-4.13.5
+collected 0 items / 1 error
+
+=================================== ERRORS ====================================
+_____________________ ERROR collecting tests/app_test.py ______________________
+ImportError while importing test module 'C:\Users\lingt\.codex\.chatgpt-projects\g-p-6a4acb080d3c8191938008eb8f0bb210\ECE444-PRA6-TDD\tests\app_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\..\..\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\app_test.py:1: in <module>
+    from project.app import app
+E   ImportError: cannot import name 'app' from 'project.app' (C:\Users\lingt\.codex\.chatgpt-projects\g-p-6a4acb080d3c8191938008eb8f0bb210\ECE444-PRA6-TDD\project\app.py)
+=========================== short test summary info ===========================
+ERROR tests/app_test.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+============================== 1 error in 0.24s ===============================
