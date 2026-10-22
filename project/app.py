@@ -1,79 +1,78 @@
-import sqlite3
-from flask import Flask, g, render_template, request, session, flash, redirect, url_for, abort
+import os
+import secrets
+from pathlib import Path
 
-app = Flask(__name__)
-app.config['DATABASE'] = 'flaskr.db'
+from flask import Flask, render_template, request, session, flash, redirect, url_for, abort, jsonify
 
-
-def get_db():
-    if 'sqlite_db' not in g:
-        g.sqlite_db = sqlite3.connect(app.config['DATABASE'])
-        g.sqlite_db.row_factory = sqlite3.Row
-    return g.sqlite_db
+from project.models import db, Post
 
 
-def init_db():
-    with app.app_context():
-        database = get_db()
-        with app.open_resource('schema.sql', mode='r') as schema:
-            database.executescript(schema.read())
-        database.commit()
+def create_app(test_config=None):
+    app = Flask(__name__)
+    url = os.getenv('DATABASE_URL', 'sqlite:///' + str(Path(__file__).resolve().parent / 'flaskr.db'))
+    if url.startswith('postgres://'):
+        url = url.replace('postgres://', 'postgresql://', 1)
+    app.config.update(
+        SQLALCHEMY_DATABASE_URI=url,
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        USERNAME=os.getenv('ADMIN_USERNAME', 'admin'),
+        PASSWORD=os.getenv('ADMIN_PASSWORD', 'admin'),
+        SECRET_KEY=os.getenv('SECRET_KEY') or secrets.token_hex(32),
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE='Lax',
+    )
+    if test_config:
+        app.config.update(test_config)
+    db.init_app(app)
+    register_routes(app)
+    return app
 
 
-@app.teardown_appcontext
-def close_db(error):
-    database = g.pop('sqlite_db', None)
-    if database is not None:
-        database.close()
+def register_routes(app):
+    @app.route('/')
+    def index():
+        entries = db.session.query(Post).order_by(Post.id.desc()).all()
+        return render_template('index.html', entries=entries)
 
 
-app.config.update(USERNAME='admin', PASSWORD='admin', SECRET_KEY='local-development-only')
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        error = None
+        if request.method == 'POST':
+            if request.form.get('username') != app.config['USERNAME']:
+                error = 'Invalid username'
+            elif request.form.get('password') != app.config['PASSWORD']:
+                error = 'Invalid password'
+            else:
+                session['logged_in'] = True
+                flash('You were logged in')
+                return redirect(url_for('index'))
+        return render_template('login.html', error=error)
 
 
-@app.route('/')
-def index():
-    entries = get_db().execute('select * from entries order by id desc').fetchall()
-    return render_template('index.html', entries=entries)
+    @app.route('/logout')
+    def logout():
+        session.pop('logged_in', None)
+        flash('You were logged out')
+        return redirect(url_for('index'))
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form.get('username') != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form.get('password') != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('index'))
-    return render_template('login.html', error=error)
+    @app.route('/add', methods=['POST'])
+    def add_entry():
+        if not session.get('logged_in'):
+            abort(401)
+        db.session.add(Post(title=request.form['title'], text=request.form['text']))
+        db.session.commit()
+        flash('New entry was successfully posted')
+        return redirect(url_for('index'))
 
 
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    flash('You were logged out')
-    return redirect(url_for('index'))
+    @app.route('/delete/<int:post_id>')
+    def delete_entry(post_id):
+        db.session.query(Post).filter_by(id=post_id).delete()
+        db.session.commit()
+        flash('The entry was deleted.')
+        return jsonify(status=1, message='Post Deleted')
 
 
-@app.route('/add', methods=['POST'])
-def add_entry():
-    if not session.get('logged_in'):
-        abort(401)
-    database = get_db()
-    database.execute('insert into entries (title, text) values (?, ?)', [request.form['title'], request.form['text']])
-    database.commit()
-    flash('New entry was successfully posted')
-    return redirect(url_for('index'))
-
-
-@app.route('/delete/<int:post_id>')
-def delete_entry(post_id):
-    from flask import jsonify
-    database = get_db()
-    database.execute('delete from entries where id = ?', (post_id,))
-    database.commit()
-    flash('The entry was deleted.')
-    return jsonify(status=1, message='Post Deleted')
+app = create_app()

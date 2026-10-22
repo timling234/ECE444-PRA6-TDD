@@ -1,13 +1,17 @@
 from pathlib import Path
 import pytest
-from project.app import app, init_db
+from project.app import create_app, db
+from project.models import Post
 
 
 @pytest.fixture
 def client(tmp_path):
-    app.config.update(TESTING=True, DATABASE=str(tmp_path / 'test.db'))
-    init_db()
-    yield app.test_client()
+    test_app = create_app(dict(TESTING=True, SECRET_KEY='test-only', USERNAME='admin', PASSWORD='admin', SQLALCHEMY_DATABASE_URI='sqlite:///' + str(tmp_path / 'test.db')))
+    with test_app.app_context():
+        db.create_all()
+        yield test_app.test_client()
+        db.session.remove()
+        db.drop_all()
 
 
 def login(client, username='admin', password='admin'):
@@ -19,7 +23,8 @@ def test_index(client):
 
 
 def test_database(client):
-    assert Path(app.config['DATABASE']).is_file()
+    assert Path(db.engine.url.database).is_file()
+    assert db.session.query(Post).count() == 0
 
 
 def test_empty_db(client):
