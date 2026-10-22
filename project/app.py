@@ -35,6 +35,14 @@ def register_routes(app):
         return render_template('index.html', entries=entries)
 
 
+    @app.route('/search/')
+    def search():
+        query = request.args.get('query', '')
+        entries = db.session.query(Post).order_by(Post.id.desc()).all() if query else []
+        entries = [entry for entry in entries if query.lower() in entry.title.lower() or query.lower() in entry.text.lower()]
+        return render_template('search.html', entries=entries, query=query)
+
+
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         error = None

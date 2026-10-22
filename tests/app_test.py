@@ -53,3 +53,26 @@ def test_delete_message(client):
     assert response.status_code == 200
     assert response.get_json()['status'] == 1
     assert b'Delete me' not in client.get('/').data
+
+
+@pytest.mark.parametrize('query,expected,absent', [('ALPHA', 'Alpha title', 'Other title'), ('needle', 'Other title', 'Alpha title'), ('missing', None, 'Alpha title')])
+def test_search_title_body_case_insensitive(client, query, expected, absent):
+    db.session.add_all([Post(title='Alpha title', text='first body'), Post(title='Other title', text='a NEEDLE here')])
+    db.session.commit()
+    response = client.get('/search/', query_string={'query': query})
+    assert response.status_code == 200
+    if expected:
+        assert expected.encode() in response.data
+    assert absent.encode() not in response.data
+
+
+def test_search_without_query(client):
+    response = client.get('/search/')
+    assert response.status_code == 200
+    assert b'Search' in response.data
+
+
+def test_search_results_use_real_post_id(client):
+    db.session.add(Post(id=42, title='Find this', text='body'))
+    db.session.commit()
+    assert b'id="42"' in client.get('/search/?query=Find').data

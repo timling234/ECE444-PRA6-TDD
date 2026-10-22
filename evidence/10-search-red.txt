@@ -1,0 +1,86 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\lingt\.codex\.chatgpt-projects\g-p-6a4acb080d3c8191938008eb8f0bb210\ECE444-PRA6-TDD
+plugins: platformdirs-4.13.5
+collected 11 items
+
+tests\app_test.py ......FFFFF                                            [100%]
+
+================================== FAILURES ===================================
+___ test_search_title_body_case_insensitive[ALPHA-Alpha title-Other title] ____
+
+client = <FlaskClient <Flask 'project.app'>>, query = 'ALPHA'
+expected = 'Alpha title', absent = 'Other title'
+
+    @pytest.mark.parametrize('query,expected,absent', [('ALPHA', 'Alpha title', 'Other title'), ('needle', 'Other title', 'Alpha title'), ('missing', None, 'Alpha title')])
+    def test_search_title_body_case_insensitive(client, query, expected, absent):
+        db.session.add_all([Post(title='Alpha title', text='first body'), Post(title='Other title', text='a NEEDLE here')])
+        db.session.commit()
+        response = client.get('/search/', query_string={'query': query})
+>       assert response.status_code == 200
+E       assert 404 == 200
+E        +  where 404 = <WrapperTestResponse streamed [404 NOT FOUND]>.status_code
+
+tests\app_test.py:63: AssertionError
+___ test_search_title_body_case_insensitive[needle-Other title-Alpha title] ___
+
+client = <FlaskClient <Flask 'project.app'>>, query = 'needle'
+expected = 'Other title', absent = 'Alpha title'
+
+    @pytest.mark.parametrize('query,expected,absent', [('ALPHA', 'Alpha title', 'Other title'), ('needle', 'Other title', 'Alpha title'), ('missing', None, 'Alpha title')])
+    def test_search_title_body_case_insensitive(client, query, expected, absent):
+        db.session.add_all([Post(title='Alpha title', text='first body'), Post(title='Other title', text='a NEEDLE here')])
+        db.session.commit()
+        response = client.get('/search/', query_string={'query': query})
+>       assert response.status_code == 200
+E       assert 404 == 200
+E        +  where 404 = <WrapperTestResponse streamed [404 NOT FOUND]>.status_code
+
+tests\app_test.py:63: AssertionError
+______ test_search_title_body_case_insensitive[missing-None-Alpha title] ______
+
+client = <FlaskClient <Flask 'project.app'>>, query = 'missing', expected = None
+absent = 'Alpha title'
+
+    @pytest.mark.parametrize('query,expected,absent', [('ALPHA', 'Alpha title', 'Other title'), ('needle', 'Other title', 'Alpha title'), ('missing', None, 'Alpha title')])
+    def test_search_title_body_case_insensitive(client, query, expected, absent):
+        db.session.add_all([Post(title='Alpha title', text='first body'), Post(title='Other title', text='a NEEDLE here')])
+        db.session.commit()
+        response = client.get('/search/', query_string={'query': query})
+>       assert response.status_code == 200
+E       assert 404 == 200
+E        +  where 404 = <WrapperTestResponse streamed [404 NOT FOUND]>.status_code
+
+tests\app_test.py:63: AssertionError
+__________________________ test_search_without_query __________________________
+
+client = <FlaskClient <Flask 'project.app'>>
+
+    def test_search_without_query(client):
+        response = client.get('/search/')
+>       assert response.status_code == 200
+E       assert 404 == 200
+E        +  where 404 = <WrapperTestResponse streamed [404 NOT FOUND]>.status_code
+
+tests\app_test.py:71: AssertionError
+____________________ test_search_results_use_real_post_id _____________________
+
+client = <FlaskClient <Flask 'project.app'>>
+
+    def test_search_results_use_real_post_id(client):
+        db.session.add(Post(id=42, title='Find this', text='body'))
+        db.session.commit()
+>       assert b'id="42"' in client.get('/search/?query=Find').data
+E       assert b'id="42"' in b'<!doctype html>\n<html lang=en>\n<title>404 Not Found</title>\n<h1>Not Found</h1>\n<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>\n'
+E        +  where b'<!doctype html>\n<html lang=en>\n<title>404 Not Found</title>\n<h1>Not Found</h1>\n<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>\n' = <WrapperTestResponse 207 bytes [404 NOT FOUND]>.data
+E        +    where <WrapperTestResponse 207 bytes [404 NOT FOUND]> = get('/search/?query=Find')
+E        +      where get = <FlaskClient <Flask 'project.app'>>.get
+
+tests\app_test.py:78: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/app_test.py::test_search_title_body_case_insensitive[ALPHA-Alpha title-Other title]
+FAILED tests/app_test.py::test_search_title_body_case_insensitive[needle-Other title-Alpha title]
+FAILED tests/app_test.py::test_search_title_body_case_insensitive[missing-None-Alpha title]
+FAILED tests/app_test.py::test_search_without_query - assert 404 == 200
+FAILED tests/app_test.py::test_search_results_use_real_post_id - assert b'id=...
+========================= 5 failed, 6 passed in 1.90s =========================
