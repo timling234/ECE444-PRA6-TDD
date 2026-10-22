@@ -1,5 +1,6 @@
 import os
 import secrets
+from functools import wraps
 from pathlib import Path
 
 from flask import Flask, render_template, request, session, flash, redirect, url_for, abort, jsonify
@@ -26,6 +27,16 @@ def create_app(test_config=None):
     db.init_app(app)
     register_routes(app)
     return app
+
+
+def login_required(view):
+    @wraps(view)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            flash('Please log in.')
+            return jsonify(status=0, message='Please log in.'), 401
+        return view(*args, **kwargs)
+    return decorated_function
 
 
 def register_routes(app):
@@ -76,6 +87,7 @@ def register_routes(app):
 
 
     @app.route('/delete/<int:post_id>')
+    @login_required
     def delete_entry(post_id):
         db.session.query(Post).filter_by(id=post_id).delete()
         db.session.commit()

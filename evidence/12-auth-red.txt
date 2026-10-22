@@ -1,0 +1,41 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\lingt\.codex\.chatgpt-projects\g-p-6a4acb080d3c8191938008eb8f0bb210\ECE444-PRA6-TDD
+plugins: platformdirs-4.13.5
+collected 14 items
+
+tests\app_test.py ...........FF.                                         [100%]
+
+================================== FAILURES ===================================
+_____________ test_anonymous_delete_is_denied_and_preserves_post ______________
+
+client = <FlaskClient <Flask 'project.app'>>
+
+    def test_anonymous_delete_is_denied_and_preserves_post(client):
+        db.session.add(Post(title='Keep this', text='Protected'))
+        db.session.commit()
+        response = client.get('/delete/1')
+>       assert response.status_code == 401
+E       assert 200 == 401
+E        +  where 200 = <WrapperTestResponse streamed [200 OK]>.status_code
+
+tests\app_test.py:85: AssertionError
+____________________ test_logout_revokes_delete_permission ____________________
+
+client = <FlaskClient <Flask 'project.app'>>
+
+    def test_logout_revokes_delete_permission(client):
+        login(client)
+        client.post('/add', data=dict(title='Keep after logout', text='Protected'))
+        client.get('/logout')
+>       assert client.get('/delete/1').status_code == 401
+E       AssertionError: assert 200 == 401
+E        +  where 200 = <WrapperTestResponse streamed [200 OK]>.status_code
+E        +    where <WrapperTestResponse streamed [200 OK]> = get('/delete/1')
+E        +      where get = <FlaskClient <Flask 'project.app'>>.get
+
+tests\app_test.py:94: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/app_test.py::test_anonymous_delete_is_denied_and_preserves_post
+FAILED tests/app_test.py::test_logout_revokes_delete_permission - AssertionEr...
+======================== 2 failed, 12 passed in 1.89s =========================

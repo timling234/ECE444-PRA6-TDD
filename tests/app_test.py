@@ -76,3 +76,25 @@ def test_search_results_use_real_post_id(client):
     db.session.add(Post(id=42, title='Find this', text='body'))
     db.session.commit()
     assert b'id="42"' in client.get('/search/?query=Find').data
+
+
+def test_anonymous_delete_is_denied_and_preserves_post(client):
+    db.session.add(Post(title='Keep this', text='Protected'))
+    db.session.commit()
+    response = client.get('/delete/1')
+    assert response.status_code == 401
+    assert response.get_json() == {'status': 0, 'message': 'Please log in.'}
+    assert db.session.get(Post, 1) is not None
+
+
+def test_logout_revokes_delete_permission(client):
+    login(client)
+    client.post('/add', data=dict(title='Keep after logout', text='Protected'))
+    client.get('/logout')
+    assert client.get('/delete/1').status_code == 401
+    assert db.session.get(Post, 1) is not None
+
+
+def test_anonymous_add_is_denied(client):
+    assert client.post('/add', data=dict(title='Forbidden', text='Denied')).status_code == 401
+    assert db.session.query(Post).count() == 0
